@@ -52,7 +52,27 @@ class CaesarAnalyzer:
     def getAlphabets(self):
         return self.alphabets
 
-    def bruteForce(self, alphabet):
+
+    def bruteForce(self):
+        choiceBruteForce = '1'
+        previousAlphabet = ''
+        for alphabet in self.alphabets:
+            alphabet = alphabet.strip('\n')
+            print ("\nCurrent Alphabet: ",alphabet)
+            if (choiceBruteForce == '1'):
+                self.bruteForceUsing(alphabet)
+                choiceBruteForce =input("------------ MENU ------------\n1. Try next alphabet\n2. Decode full text using current alphabet\n3. Return main menu\n************************************ \nType a number corresponding to your choice (1|2|3): ")
+                previousAlphabet = alphabet
+            elif (choiceBruteForce == '2'):
+                shift = int(input("\n Input the shift number to decode with: "))
+                self.exportFullDecryptedCipherText(shift,previousAlphabet)
+                break
+            else:
+                break
+        if (choiceBruteForce == '1'):
+            choice = input("There are no more alphabets left, Continue (Y)")
+
+    def bruteForceUsing(self, alphabet):
         #print out all decrypted text for a sample trying all combinations of an alphabet
         maxShifts = len(alphabet)
         sampleCipherTxt = self.getSampleOfCipherText()
@@ -60,6 +80,7 @@ class CaesarAnalyzer:
             shiftedAlphabet = self.rotateAlphabet(alphabet,shift)
             plaintext = ''
             print("Shift: ",shift," , Decoded: ",self.decryptCipherText(shiftedAlphabet,alphabet,sampleCipherTxt))
+        print("\n")
 
     def rotateAlphabet(self,alphabet,n):
         return alphabet[n:]+alphabet[:n]
@@ -69,7 +90,9 @@ class CaesarAnalyzer:
         ciphertext = self.cipherText.split(' ')
         shiftedAlphabet = self.rotateAlphabet(alphabet,shift)
         file.write( self.decryptCipherText(shiftedAlphabet,alphabet,ciphertext))
+        print ("\n**Successfully created decoded.txt with decoded text**\n")
         file.close()
+        input("Continue (Y): ")
 
     def decryptCipherText (self, shiftedAlphabet, alphabet, cipherText): 
         plaintext = ''
