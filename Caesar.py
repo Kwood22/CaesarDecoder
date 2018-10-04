@@ -65,9 +65,10 @@ class CaesarAnalyzer:
             alphabet = alphabet.strip('\n')
             print ("\nCurrent Alphabet: ",alphabet)
             if (isManual):
+                #manual bruteforce
                 if (choiceBruteForce == '1'):
                     self.bruteForceUsing(alphabet)
-                    choiceBruteForce =input("------------ MENU ------------\n1. Try next alphabet\n2. Decode full text using current alphabet with a chosen shift\n3. Return main menu\n************************************ \nType a number corresponding to your choice (1|2|3): ")
+                    choiceBruteForce =input("------------ MENU 2 ------------\n1. Try next alphabet\n2. Decode full text using current alphabet with a chosen shift\n3. Return main menu\n************************************ \nType a number corresponding to your choice (1|2|3): ")
                     previousAlphabet = alphabet
                 elif (choiceBruteForce == '2'):
                     shift = int(input("\n Input the shift number to decode with: "))
@@ -76,13 +77,15 @@ class CaesarAnalyzer:
                 else:
                     break
             else: 
+                #automatic bruteforce
                 alphabetCorrectWordCounts.append(self.bruteForceUsing(alphabet))
 
         if (isManual == False):
             bestAlphabetIndex = self.findBestAlphabet(alphabetCorrectWordCounts)
             bestAlphabet = self.alphabets[bestAlphabetIndex]
             bestShift = self.findBestShift(alphabetCorrectWordCounts[bestAlphabetIndex])
-            print ("\n**********************\n\tResults\n**********************\nBest alphabet: ",bestAlphabet,"Best Shift: ",bestShift)
+            bestWordCount = max(alphabetCorrectWordCounts[bestAlphabetIndex])
+            print ("\n**********************\n\tResults\n**********************\nBest alphabet: ",bestAlphabet,"\nBest Shift: ",bestShift,"\nBest # Words: ",bestWordCount)
             self.exportFullDecryptedCipherText(bestShift,bestAlphabet)
         elif (choiceBruteForce == '1'):
             choice = input("There are no more alphabets left, Continue (Y)")
