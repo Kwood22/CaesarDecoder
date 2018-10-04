@@ -69,11 +69,11 @@ class CaesarAnalyzer:
                 if (choiceBruteForce == '1'):
                     self.bruteForceUsing(alphabet)
                     choiceBruteForce =input("------------ MENU 2 ------------\n1. Try next alphabet\n2. Decode full text using current alphabet with a chosen shift\n3. Return main menu\n************************************ \nType a number corresponding to your choice (1|2|3): ")
-                    previousAlphabet = alphabet
-                elif (choiceBruteForce == '2'):
-                    shift = int(input("\n Input the shift number to decode with: "))
-                    self.exportFullDecryptedCipherText(shift,previousAlphabet)
-                    break
+
+                    if (choiceBruteForce == '2'):
+                        shift = int(input("\n Input the shift number to decode with: "))
+                        self.exportFullDecryptedCipherText(shift,alphabet)
+                        break
                 else:
                     break
             else: 
@@ -139,6 +139,9 @@ class CaesarAnalyzer:
         #export textfile with full decrypted cipher text
         file = open("decoded.txt","w+")
         ciphertext = self.cipherText.split(' ')
+        # Sanitise Alphabet
+        alphabet = alphabet.strip(' ')
+        alphabet = alphabet.strip('\n')
         shiftedAlphabet = self.rotateAlphabet(alphabet,shift)
         file.write( self.decryptCipherText(shiftedAlphabet,alphabet,ciphertext))
         print ("\n**Successfully created decoded.txt with decoded text**\n")
@@ -161,7 +164,7 @@ class CaesarAnalyzer:
                 indx += 1
             for ind in plaintextCoords:
                 if (ind < 0):
-                    decodedIndex = ind*-1
+                    decodedIndex = ind * (-1)
                     plaintextChars.append(word[decodedIndex]) #extract punctuation from ciphertext word
                 else: 
                     plaintextChars.append(alphabet[ind])
