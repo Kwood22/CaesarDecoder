@@ -28,4 +28,8 @@ while (choiceMenu1 != '3'):
         else:
             CaesarDecoder.bruteForce(False)
     elif (choiceMenu1 == '2' ):
-        break
+        path = "/home/kyle/Documents/Year 3/COS 330/Assignments/A5/CaesarDecoder/CaesarText.txt"#input("Enter the path to the cipherText file: ") 
+        pathAlpha = "/home/kyle/Documents/Year 3/COS 330/Assignments/A5/CaesarDecoder/alphabets.txt" #input("Enter the path to the alphabets file: ")
+        CaesarDecoder.loadCipherTextFile(path)
+        CaesarDecoder.loadAlphabets(pathAlpha)
+        CaesarDecoder.frequencies()

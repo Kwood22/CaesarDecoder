@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import sys
 import os,os.path
+import operator
 from DictionaryChecker import DictionaryChecker
 from collections import deque
 class CaesarAnalyzer:
@@ -9,6 +10,7 @@ class CaesarAnalyzer:
         self.cipherText = ''
         self.alphabets = []
         self.dict = DictionaryChecker()
+        self.engLetterFreq = self.initLetterFreq()
 
     def loadCipherTextFile (self,cipherTextFileName):
         if (os.path.exists(cipherTextFileName)==False): 
@@ -30,17 +32,6 @@ class CaesarAnalyzer:
         
     def printLoadedFile (self):
         print(self.cipherText)
-
-    def getCharacterFrequencies(self):
-        #Create dictionary of character frequencies
-        dict = {}
-        for c in self.cipherText:
-            keys = dict.keys()
-            if c in keys:
-                dict[c] += 1
-            else:
-                dict[c] = 1
-        return dict
 
     def getSampleOfCipherText (self):
         # get the first 100 characters
@@ -131,6 +122,72 @@ class CaesarAnalyzer:
         return self.dict.getNumRealWords(plaintext)
         
 
+    """
+    -----------------
+    Freq Analysis
+    -----------------
+    """
+
+    # Todo: I have implemented it differently to what you have suggested... so the code might end up being usless
+    def initLetterFreq(self):
+        return ['e','t','a','o','i','n','s','h','r','d','l','c','u','m','w','f','g','y','p','b','v','k','j','x','q','z',4,9,0,1,2,3,5,6,7,8]
+
+    def getCharacterFrequencies(self):
+        #Create dictionary of character frequencies
+        #order : a-z and 0-9
+        letterFreq = [0] * 36
+        cipherText = self.cipherText.lower()
+        cipherText=cipherText.replace('\n','')
+        cipherText=cipherText.replace(' ','')
+        for c in cipherText:
+            if (c == None):
+                break
+            if (c.isalnum()):
+                if (c.isalpha()):
+                    index = ord(c) - ord('a')
+                else:
+                    print(c)
+                    index = 25 + int(c)
+                   
+                letterFreq[index] += 1
+        return self.getSortedLetterArray(letterFreq)
+        
+
+    def getSortedLetterArray (self, letterFreq):
+        letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9']
+        
+        for i in range(0,35):
+            for j in range (0,35):
+                if(letterFreq[i]>letterFreq[j]):
+                    #swap letters at i and j
+                    tempLetter = letters[j]
+                    letters[j] = letters[i]
+                    letters[i] = tempLetter
+                    tempFreq = letterFreq[j]
+                    letterFreq[j] = letterFreq[i]
+                    letterFreq[i] = tempFreq
+        return letters
+
+
+    def frequencies (self):
+        freq = self.getCharacterFrequencies()
+        sampleCipherTxt = self.getSampleOfCipherText()
+        plaintext = ''
+        for word in sampleCipherTxt:
+            newWord = []
+            for letter in word:
+                letter = letter.lower()
+                if (letter.isalnum()):
+                    index = freq.index(letter)
+                    print(letter,index)
+                    replacementLetter = self.engLetterFreq[index]
+                    newWord.append(replacementLetter)
+            print (word," -> ",newWord)
+            #plaintext = ''.join(newWord)
+
+        print(plaintext)
+
+    
     def rotateAlphabet(self,alphabet,n):
         #shift key
         return alphabet[n:]+alphabet[:n]
@@ -147,6 +204,7 @@ class CaesarAnalyzer:
         print ("\n**Successfully created decoded.txt with decoded text**\n")
         file.close()
         input("Continue (Y): ")
+        
 
     def decryptCipherText (self, shiftedAlphabet, alphabet, cipherText): 
         plaintext = ''
