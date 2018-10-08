@@ -143,36 +143,91 @@ class CaesarAnalyzer:
                     listOfCharacters[letter]+=1
                 else:
                     listOfCharacters[letter]=1
-        print(listOfCharacters)
         for k,v in listOfCharacters.items():
             listOfCharacters[k] = (v/numLetters)
 
         sorted_by_value = sorted(listOfCharacters.items(), key=lambda kv: kv[1],reverse=True)
         return dict(sorted_by_value)
 
-    def cryptAnalysis (self):
+    def cryptAnalysis(self):
         engLetterFreq = self.initLetterFreq()
         cipherTextFreq = self.getRelativeCharacterFreq()
+        sampleCipherText = self.getSampleOfCipherText()
+        result = self.getCryptAnalysisShift(engLetterFreq, cipherTextFreq, sampleCipherText)
+        if (result['shiftValue'] != -1):
+            print(result['shiftValue'], result['alphabet'])
+            self.exportFullDecryptedCipherText(result['shiftValue'], result['alphabet'])
+        # end if
+    # end cryptAnalysis
 
+    def getCryptAnalysisShift(self, engLetterFreq, cipherTextFreq, sampleCipherText):
+        for alphabet in self.alphabets:
+            for engChar in engLetterFreq:
+                for cipherChar in cipherTextFreq:
+                    shiftValue = self.getShiftValue(engChar, cipherChar, alphabet)
+                    isValidWord = True
+                    for sampleWord in sampleCipherText:
+                        word = self.decipherWord(sampleWord, shiftValue, alphabet)
+                        if (self.dict.check(word) == False):                            
+                            isValidWord = False
+                        # end if
+                    # end for
+                    if (isValidWord == True):
+                        return { 'shiftValue': shiftValue, 'alphabet': alphabet } 
+                    # end if
+                # end for
+            # end for
+        # end for
+        return { 'shiftValue': -1, 'alphabet': None }
+    # end cryptAnalysisShift
 
-    def frequencies (self):
-        freq = self.getCharacterFrequencies()
-        sampleCipherTxt = self.getSampleOfCipherText()
-        plaintext = ''
-        for word in sampleCipherTxt:
-            newWord = []
-            for letter in word:
-                letter = letter.lower()
-                if (letter.isalnum()):
-                    index = freq.index(letter)
-                    print(letter,index)
-                    replacementLetter = self.engLetterFreq[index]
-                    newWord.append(replacementLetter)
-            print (word," -> ",newWord)
-            #plaintext = ''.join(newWord)
+    def getShiftValue(self, engChar, cipherChar, alphabet):
+        engCharIndex = -1
+        counter = 0
+        for alphabetChar in alphabet:
+            if (alphabetChar == engChar):
+                engCharIndex = counter
+            # end if
+            counter += 1
+        # end for
 
-        print(plaintext)
+        cipherCharIndex = -1
+        counter = 0
+        for alphabetChar in alphabet:
+            if (alphabetChar == cipherChar):
+                cipherCharIndex = counter
+            # end if
+            counter += 1
+        # end for
 
+        # set all shifts to right shift
+        if ((engCharIndex - cipherCharIndex) < 0):
+            return (62 - cipherCharIndex + engCharIndex)
+        else:
+            return (engCharIndex - cipherCharIndex)
+    # getShiftValue
+
+    def decipherWord(self, sampleWord, shiftValue, alphabet):
+        plainText = ''
+        for char in sampleWord:
+            if (char.isalnum()):
+                count = 0
+                for alphaChar in alphabet:
+                    if (char == alphaChar):
+                        charIndex = count
+                    # end if
+                    count += 1
+                # end for
+                shiftCharIndex = charIndex + shiftValue
+                if (shiftCharIndex > 61):   # if overflow past alphabet
+                    plainText += alphabet[shiftCharIndex - 62]  # if value is 62, then it is value 0
+                else:
+                    plainText += alphabet[shiftCharIndex]
+                # end if
+            # end if
+        # end for
+        return plainText
+    # end decipherWord
     
     def rotateAlphabet(self,alphabet,n):
         #shift key
