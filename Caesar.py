@@ -221,7 +221,7 @@ class CaesarAnalyzer:
                 # end for
                 shiftCharIndex = charIndex + shiftValue
                 if (shiftCharIndex > 61):   # if overflow past alphabet
-                    plainText += alphabet[shiftCharIndex - 62]  # if value is 62, then it is value 0
+                    plainText += alphabet[shiftCharIndex - 62]  # ie. if shiftCharIndex is 62, then it must be 0
                 else:
                     plainText += alphabet[shiftCharIndex]
                 # end if
