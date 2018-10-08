@@ -53,11 +53,12 @@ class CaesarAnalyzer:
         alphabetCorrectWordCounts = []
         for alphabet in self.alphabets:
             alphabet = alphabet.strip('\n')
-            print ("\nCurrent Alphabet: ",alphabet)
+            if (isManual): 
+                print ("\nCurrent Alphabet: ",alphabet)
             if (isManual):
                 #manual bruteforce
                 if (choiceBruteForce == '1'):
-                    self.bruteForceUsing(alphabet)
+                    self.bruteForceUsing(alphabet,isManual)
                     choiceBruteForce =input("------------ MENU 2 ------------\n1. Try next alphabet\n2. Decode full text using current alphabet with a chosen shift\n3. Return main menu\n************************************ \nType a number corresponding to your choice (1|2|3): ")
 
                     if (choiceBruteForce == '2'):
@@ -68,7 +69,7 @@ class CaesarAnalyzer:
                     break
             else: 
                 #automatic bruteforce
-                alphabetCorrectWordCounts.append(self.bruteForceUsing(alphabet))
+                alphabetCorrectWordCounts.append(self.bruteForceUsing(alphabet,isManual))
 
         if (isManual == False):
             bestAlphabetIndex = self.findBestAlphabet(alphabetCorrectWordCounts)
@@ -98,7 +99,7 @@ class CaesarAnalyzer:
         bestCount = max(alphabetWordCount)
         return alphabetWordCount.index(bestCount)
 
-    def bruteForceUsing(self, alphabet):
+    def bruteForceUsing(self, alphabet,isManual):
         #print out all decrypted text for a sample trying all combinations of an alphabet
         #Return correct word counts of each combination
         maxShifts = len(alphabet)
@@ -110,9 +111,10 @@ class CaesarAnalyzer:
             plaintext = self.decryptCipherText(shiftedAlphabet,alphabet,sampleCipherTxt)
             numWords = self.countDictionaryWords(plaintext)
             shiftNumberCorrectWords.append(numWords)
-            print("Shift: ",shift," , Decoded: ",plaintext,", #Words: ",numWords)
-            
-        print("\n")
+            if (isManual):
+                print("Shift: ",shift," , Decoded: ",plaintext,", #Words: ",numWords)
+        if (isManual):    
+            print("\n")
         return shiftNumberCorrectWords
 
     def countDictionaryWords (self, plaintext):
