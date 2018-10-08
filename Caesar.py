@@ -155,8 +155,7 @@ class CaesarAnalyzer:
         sampleCipherText = self.getSampleOfCipherText()
         result = self.getCryptAnalysisShift(engLetterFreq, cipherTextFreq, sampleCipherText)
         if (result['shiftValue'] != -1):
-            print(result['shiftValue'], result['alphabet'])
-            self.exportFullDecryptedCipherText(result['shiftValue'], result['alphabet'])
+            self.exportFullDecryptedCipherText(62 - result['shiftValue'], result['alphabet'])
         # end if
     # end cryptAnalysis
 
@@ -229,9 +228,10 @@ class CaesarAnalyzer:
         return plainText
     # end decipherWord
     
-    def rotateAlphabet(self,alphabet,n):
+    def rotateAlphabet(self, alphabet, n):
         #shift key
         return alphabet[n:]+alphabet[:n]
+    # end rotateAlphabet
 
     def exportFullDecryptedCipherText (self, shift,alphabet):
         #export textfile with full decrypted cipher text
@@ -240,14 +240,14 @@ class CaesarAnalyzer:
         # Sanitise Alphabet
         alphabet = alphabet.strip(' ')
         alphabet = alphabet.strip('\n')
-        shiftedAlphabet = self.rotateAlphabet(alphabet,shift)
-        file.write( self.decryptCipherText(shiftedAlphabet,alphabet,ciphertext))
+        shiftedAlphabet = self.rotateAlphabet(alphabet, shift)
+        file.write( self.decryptCipherText(shiftedAlphabet, alphabet, ciphertext))
         print ("\n**Successfully created decoded.txt with decoded text**\n")
         file.close()
         input("Continue (Y): ")
-        
+    # end exportFullDecryptedCipherText
 
-    def decryptCipherText (self, shiftedAlphabet, alphabet, cipherText): 
+    def decryptCipherText(self, shiftedAlphabet, alphabet, cipherText): 
         plaintext = ''
         decryptedSample = []
         for word in cipherText:
@@ -269,5 +269,6 @@ class CaesarAnalyzer:
                     plaintextChars.append(alphabet[ind])
             plaintext = ''.join(plaintextChars)
             decryptedSample.append(plaintext)
-        
+        # end for
         return ' '.join(decryptedSample) 
+    # end decryptCipherText
