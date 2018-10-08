@@ -17,7 +17,8 @@ while (choiceMenu1 != '3'):
 ************************************""")
     choiceMenu1 = input("\nType a number corresponding to your choice (1|2|3): ")
     if (choiceMenu1 == '1'):
-        path = "./CaesarText.txt"
+        # path = "./CaesarText.txt"
+        path = input("Enter the path to the cipherText file: ") 
         pathAlpha = "./alphabets.txt"
         CaesarDecoder.loadCipherTextFile(path)
         CaesarDecoder.loadAlphabets(pathAlpha)
@@ -28,7 +29,8 @@ while (choiceMenu1 != '3'):
         else:
             CaesarDecoder.bruteForce(False)
     elif (choiceMenu1 == '2' ):
-        path = "./CaesarText.txt"
+        # path = "./CaesarText.txt"
+        path = input("Enter the path to the cipherText file: ") 
         pathAlpha = "./alphabets.txt"
         CaesarDecoder.loadCipherTextFile(path)
         CaesarDecoder.loadAlphabets(pathAlpha)
