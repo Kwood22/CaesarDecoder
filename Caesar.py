@@ -10,7 +10,6 @@ class CaesarAnalyzer:
         self.cipherText = ''
         self.alphabets = []
         self.dict = DictionaryChecker()
-        self.engLetterFreq = self.initLetterFreq()
 
     def loadCipherTextFile (self,cipherTextFileName):
         if (os.path.exists(cipherTextFileName)==False): 
@@ -128,45 +127,32 @@ class CaesarAnalyzer:
     -----------------
     """
 
-    # Todo: I have implemented it differently to what you have suggested... so the code might end up being usless
     def initLetterFreq(self):
-        return ['e','t','a','o','i','n','s','h','r','d','l','c','u','m','w','f','g','y','p','b','v','k','j','x','q','z',4,9,0,1,2,3,5,6,7,8]
-
-    def getCharacterFrequencies(self):
-        #Create dictionary of character frequencies
-        #order : a-z and 0-9
-        letterFreq = [0] * 36
+        return {'e':0.12702,'t':0.09056,'a':0.08167,'o':0.07507,'i':0.06966,'n':0.06749,'s':0.06327,'h':0.06094,'r':0.05987,'d':0.04253,'l':0.04025,'c':0.02782,'u':0.02758,'m':0.02406,'w':0.02360,'f':0.02228,'g':0.02015,'y':0.01974,'p':0.01929,'b':0.01492,'v':0.00978,'k':0.00772,'j':0.00153,'x':0.00150,'q':0.00095,'z':0.00074}
+        
+    def getRelativeCharacterFreq (self):
         cipherText = self.cipherText.lower()
         cipherText=cipherText.replace('\n','')
         cipherText=cipherText.replace(' ','')
-        for c in cipherText:
-            if (c == None):
-                break
-            if (c.isalnum()):
-                if (c.isalpha()):
-                    index = ord(c) - ord('a')
+        listOfCharacters={}
+        numLetters = 0
+        for letter in cipherText:
+            if (letter.isalnum()):
+                numLetters += 1
+                if letter in listOfCharacters.keys():
+                    listOfCharacters[letter]+=1
                 else:
-                    print(c)
-                    index = 25 + int(c)
-                   
-                letterFreq[index] += 1
-        return self.getSortedLetterArray(letterFreq)
-        
+                    listOfCharacters[letter]=1
+        print(listOfCharacters)
+        for k,v in listOfCharacters.items():
+            listOfCharacters[k] = (v/numLetters)
 
-    def getSortedLetterArray (self, letterFreq):
-        letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','0','1','2','3','4','5','6','7','8','9']
-        
-        for i in range(0,35):
-            for j in range (0,35):
-                if(letterFreq[i]>letterFreq[j]):
-                    #swap letters at i and j
-                    tempLetter = letters[j]
-                    letters[j] = letters[i]
-                    letters[i] = tempLetter
-                    tempFreq = letterFreq[j]
-                    letterFreq[j] = letterFreq[i]
-                    letterFreq[i] = tempFreq
-        return letters
+        sorted_by_value = sorted(listOfCharacters.items(), key=lambda kv: kv[1],reverse=True)
+        return dict(sorted_by_value)
+
+    def cryptAnalysis (self):
+        engLetterFreq = self.initLetterFreq()
+        cipherTextFreq = self.getRelativeCharacterFreq()
 
 
     def frequencies (self):

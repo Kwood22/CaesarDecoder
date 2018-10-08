@@ -32,4 +32,4 @@ while (choiceMenu1 != '3'):
         pathAlpha = "/home/kyle/Documents/Year 3/COS 330/Assignments/A5/CaesarDecoder/alphabets.txt" #input("Enter the path to the alphabets file: ")
         CaesarDecoder.loadCipherTextFile(path)
         CaesarDecoder.loadAlphabets(pathAlpha)
-        CaesarDecoder.frequencies()
+        print(CaesarDecoder.getRelativeCharacterFreq())
